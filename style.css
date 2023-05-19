@@ -1,0 +1,60 @@
+html,
+body {
+  margin: 0;
+}
+
+html {
+  font-size: min(22px, max(16px, calc(100vw * 0.03)));
+}
+
+body {
+  min-height: 100vh;
+  background-color: #e1e1e1;
+}
+
+body * {
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  height: 100dvh;
+}
+
+[frame-rate]:before {
+  content: attr(frame-rate);
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  color: lime;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.select-none {
+  user-select: none;
+}
+/* display start */
+.flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+.block {
+  display: block;
+}
+.inline {
+  display: inline-block;
+}
+/* display end */
