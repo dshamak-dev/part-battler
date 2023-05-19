@@ -11,6 +11,10 @@ export default class GameObjectView {
     return "";
   }
 
+  get html() {
+    return null;
+  }
+
   constructor(props = {}) {
     Object.assign(this, props);
   }

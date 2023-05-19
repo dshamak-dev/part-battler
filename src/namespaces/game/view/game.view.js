@@ -5,6 +5,7 @@ export default class GameView extends GameObjectView {
 
   get style() {
     return `
+      position: relative;
       width: 100vw; min-height: 100vh; height: 100dvh;
       background: #2b2b2b;
       display: flex; align-items: center; justify-content: center;
@@ -22,15 +23,13 @@ export default class GameView extends GameObjectView {
   }
 
   render() {
+    const activeScreen = this.model.getScreen(this.model.activeScreenType);
+
     this.parent.innerHTML = `
       <div
         class="${this.className}"
         style="${this.style}"
-      >
-        <div class="game-content" style="text-align: center; color: white;">
-          <h4>Insert Coin</h4>
-        </div>
-      </div>
+      >${activeScreen ? activeScreen.html : ''}</div>
     `;
   }
 }

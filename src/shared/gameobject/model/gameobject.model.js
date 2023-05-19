@@ -10,6 +10,10 @@ export default class GameObject {
     return JSON.stringify(this);
   }
 
+  get html() {
+    return this.view?.html || null;
+  }
+
   constructor({ position, dimension, ...other } = {}) {
     Object.assign(
       this,
