@@ -1,3 +1,4 @@
+import { log } from "../../../shared/debug/control/debug.control.js";
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
 import Screen from "../model/screen.model.js";
 
@@ -5,7 +6,13 @@ export default class LandingScreen extends Screen {
   constructor(props) {
     super(props);
 
-    this.view = new View();
+    this.view = new View({ model: this });
+  }
+
+  show() {
+    super.show();
+
+    log('info', 'Game State', this.model);
   }
 }
 
