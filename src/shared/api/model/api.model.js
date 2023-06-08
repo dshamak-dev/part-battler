@@ -1,9 +1,9 @@
 import { log } from "../../debug/control/debug.control.js";
 import { waitFor } from "../../time/control/time.control.js";
 
-const fakeDelay = () => {
+const fakeDelay = (min = 2, max = 5) => {
   let startFake = Date.now();
-  let ms = Math.max(2, Math.min(5, Math.floor(Math.random() * 5))) * 1000;
+  let ms = Math.max(min, Math.min(max, Math.floor(Math.random() * max))) * 1000;
 
   return waitFor(ms).then(() => {
     const passed = Date.now() - startFake;
@@ -20,7 +20,7 @@ export default class API {
   }
 
   async get(props) {
-    await fakeDelay();
+    await fakeDelay(1, 2);
 
     return new Promise((res, rej) => {
       let data = JSON.parse(localStorage.getItem(this.category));
@@ -49,6 +49,10 @@ export default class API {
 
       res(json);
     });
+  }
+
+  async update(props, json) {
+    return this.put(props, json);
   }
 
   async put(props, json) {

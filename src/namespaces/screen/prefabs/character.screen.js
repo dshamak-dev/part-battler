@@ -1,7 +1,10 @@
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
+import { screenType } from "../const/screen.cont.js";
 import Screen from "../model/screen.model.js";
 
-export default class PlayerScreen extends Screen {
+export default class CharacterScreen extends Screen {
+  type = screenType.character;
+
   constructor(props) {
     super(props);
 
@@ -29,7 +32,7 @@ class View extends GameObjectView{
         style="${this.style}"
       >
         <div class="loading-screen" style="text-align: center; color: white;">
-          <h4>Player Screen</h4>
+          <h4>Character Screen</h4>
         </div>
       </div>
     `;

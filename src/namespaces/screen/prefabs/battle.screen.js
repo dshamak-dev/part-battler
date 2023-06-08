@@ -1,7 +1,10 @@
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
+import { screenType } from "../const/screen.cont.js";
 import Screen from "../model/screen.model.js";
 
 export default class BattleScreen extends Screen {
+  type = screenType.battle;
+
   constructor(props) {
     super(props);
 
@@ -9,7 +12,7 @@ export default class BattleScreen extends Screen {
   }
 }
 
-class View extends GameObjectView{
+class View extends GameObjectView {
   get style() {
     return `
       width: 100%; height: 100%;

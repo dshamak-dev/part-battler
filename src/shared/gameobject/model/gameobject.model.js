@@ -3,11 +3,14 @@ import Vector from "../../vector/model/vector.model.js";
 
 export default class GameObject {
   position;
+  dimension;
 
   view;
 
   get json() {
-    return JSON.stringify(this);
+    const { dimension, position } = this;
+
+    return { dimension, position };
   }
 
   get html() {
@@ -27,6 +30,12 @@ export default class GameObject {
 
   update() {
     if (this.view) {
+      this.view.render();
+    }
+  }
+
+  render() {
+    if (this.view && this.view.render) {
       this.view.render();
     }
   }

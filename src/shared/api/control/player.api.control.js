@@ -8,11 +8,11 @@ export const getAllPlayers = async () => {
   return list || [];
 };
 
-export const getPlayer = (id) => {
+export const getUser = (id) => {
   return api.get(id);
 };
 
-export const addPlayer = (id, json) => {
+export const addUser = (id, json) => {
   return api.post(id, json);
 };
 

@@ -12,31 +12,37 @@ export default class AuthScreen extends Screen {
 
     this.view = new View({ model: this });
 
-    this.message = 'AUTH';
+    this.message = "AUTH";
 
     this.sync();
   }
 
   async sync() {
     this.error = null;
-    this.message = 'Auth in Progress';
+    this.message = "Auth in Progress";
 
     const cachedUser = await getCachedUser().catch((err) => null);
 
     if (cachedUser != null) {
-      return this.model.user  = cachedUser;
+      this.model.user = cachedUser;
+    } else {
+      await this.auth();
     }
 
-    this.auth();
+    this.model.nextScreen();
   }
 
   async auth() {
-    this.message = 'Sign In. Please Wait';
+    this.message = "Sign In. Please Wait";
 
     const self = this;
     // todo: Add auth form
     const id = Date.now();
-    const userData = { id, name: "John Doe" };
+    const userData = {
+      id,
+      name: "John Doe",
+      characters: [{ id: 1, name: "Tonocio" }],
+    };
     let user = await addUser(id, userData).catch((err) => {
       self.error = err?.message || err;
 
@@ -44,6 +50,8 @@ export default class AuthScreen extends Screen {
     });
 
     this.model.user = user;
+
+    return user;
   }
 }
 
@@ -68,7 +76,11 @@ class View extends GameObjectView {
       >
         <div class="auth-screen" style="text-align: center; color: white;">
           <h3>${this.model.message}</h3>
-          ${this.model.error ? `<h5 style="color: red;">${this.model.error}</h5>` : ""}
+          ${
+            this.model.error
+              ? `<h5 style="color: red;">${this.model.error}</h5>`
+              : ""
+          }
         </div>
       </div>
     `;

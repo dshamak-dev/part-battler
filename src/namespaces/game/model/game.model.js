@@ -2,15 +2,16 @@ import GameObject from "../../../shared/gameobject/model/gameobject.model.js";
 
 import LoadingScreen from "../../screen/prefabs/loading.screen.js";
 import LandingScreen from "../../screen/prefabs/landing.screen.js";
-import BattleScreen from "../../screen/prefabs/battle.screen.js";
-import PlayerScreen from "../../screen/prefabs/player.screen.js";
-import ScoreBoardScreen from "../../screen/prefabs/scoreboard.screen.js";
 
 import GameView from "../view/game.view.js";
 import AuthScreen from "../../screen/prefabs/auth.screen.js";
 import { getNextArrayItem } from "../../../shared/object/control/array.control.js";
+import { updateUser } from "../../../shared/api/control/user.api.control.js";
+import { createScreenByType } from "../../screen/contol/screen.control.js";
 
 export default class Game extends GameObject {
+  static instance;
+
   screens;
   activeScreenType;
   // private
@@ -29,19 +30,34 @@ export default class Game extends GameObject {
       return;
     }
 
-    this._user = Object.assign({}, data);
-    this.nextScreen();
+    this._user = Object.assign(
+      {
+        maxCharactersNum: 5,
+        availableCharactersNum: 2,
+      },
+      data
+    );
+  }
+
+  get characters() {
+    return this._user?.characters?.slice() || [];
+  }
+
+  get json() {
+    const base = super.json;
+    const { user } = this;
+
+    return Object.assign({}, base, { user });
   }
 
   constructor() {
     super();
 
+    Game.instance = this;
+
     this.addScreen(new AuthScreen({ model: this }));
     this.addScreen(new LoadingScreen({ model: this }));
     this.addScreen(new LandingScreen({ model: this }));
-    this.addScreen(new PlayerScreen({ model: this }));
-    this.addScreen(new BattleScreen({ model: this }));
-    this.addScreen(new ScoreBoardScreen({ model: this }));
 
     this.toggleScreen(this.screens[0].type);
 
@@ -50,6 +66,28 @@ export default class Game extends GameObject {
     this.update();
   }
 
+  // region Data
+  save() {
+    const { user, ...game } = this.json;
+
+    updateUser(user.id, user);
+    // updateGame(game.id, game);
+  }
+
+  // region Character
+  addCharacter(character) {
+    const characters = this.characters;
+
+    characters.push(character);
+
+    this._user.characters = characters;
+
+    this.save();
+    this.update();
+    this.render();
+  }
+
+  // region Screen
   getScreen(screenType) {
     return this.screens.find((s) => s.type === screenType);
   }
@@ -62,12 +100,28 @@ export default class Game extends GameObject {
     this.screens.push(screen);
   }
 
+  loadScreen(type, props) {
+    let screen = this.getScreen(type);
+
+    if (!screen) {
+      screen = this.addScreen(
+        createScreenByType(type, Object.assign({}, props, { model: this }))
+      );
+    }
+
+    this.toggleScreen(type);
+  }
+
   toggleScreen(nextScreenType) {
     this.getScreen(this.activeScreenType)?.hide();
 
     this.activeScreenType = nextScreenType;
 
-    this.getScreen(this.activeScreenType)?.show();
+    const nextScreen = this.getScreen(this.activeScreenType);
+
+    if (nextScreen) {
+      nextScreen.show();
+    }
 
     this.update();
   }

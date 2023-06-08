@@ -1,12 +1,15 @@
 import { getAllBundles } from "../../../shared/api/control/bundle.api.control.js";
-import {
-  addPlayer,
-  getPlayer,
-} from "../../../shared/api/control/player.api.control.js";
+// import {
+//   addUser,
+//   getUser,
+// } from "../../../shared/api/control/player.api.control.js";
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
+import { screenType } from "../const/screen.cont.js";
 import Screen from "../model/screen.model.js";
 
 export default class LoadingScreen extends Screen {
+  type = screenType.load;
+
   constructor(props) {
     super(props);
 
@@ -28,11 +31,10 @@ export default class LoadingScreen extends Screen {
     await this.loadBundles().catch((err) => {
       self.error = err?.message || err;
     });
-    await this.loadPlayer().catch((err) => {
-      self.error = err?.message || err;
-    });
 
-    self.model.nextScreen();
+    if (!self.error) {
+      self.model.nextScreen();
+    }
   }
 
   async loadBundles() {
@@ -49,37 +51,37 @@ export default class LoadingScreen extends Screen {
     return (this.model.bundles = bundles || []);
   }
 
-  async loadPlayer() {
-    const self = this;
-    this.error = null;
-    this.message = "Loading Player...";
+  // async loadPlayer() {
+  //   const self = this;
+  //   this.error = null;
+  //   this.message = "Loading Player...";
 
-    const userId = this.model?.user?.id;
+  //   const userId = this.model?.user?.id;
 
-    if (userId == null) {
-      return;
-    }
+  //   if (userId == null) {
+  //     return;
+  //   }
 
-    let player = await getPlayer(userId).catch((err) => {
-      self.error = err.message || err;
+  //   let user = await getUser(userId).catch((err) => {
+  //     self.error = err.message || err;
 
-      return null;
-    });
+  //     return null;
+  //   });
 
-    if (player == null) {
-      player = await addPlayer(userId, { parts: [], name: "Wooden Boy" })
-        .then((player) => {
-          return (self.model.player = player || null);
-        })
-        .catch((err) => {
-          self.error = err.message || err;
+  //   if (user == null) {
+  //     user = await addUser(userId, { characters: [{ id: 1, name: 'Tonocio' }], name: "Wooden Boy" })
+  //       .then((user) => {
+  //         return (self.model.user = user || null);
+  //       })
+  //       .catch((err) => {
+  //         self.error = err.message || err;
 
-          return null;
-        });
-    }
+  //         return null;
+  //       });
+  //   }
 
-    return (this.model.player = player || null);
-  }
+  //   return (this.model.user = user || null);
+  // }
 }
 
 class View extends GameObjectView {
