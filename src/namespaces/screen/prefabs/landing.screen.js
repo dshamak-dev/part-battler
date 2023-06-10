@@ -12,6 +12,7 @@ import Screen from "../model/screen.model.js";
 
 export default class LandingScreen extends Screen {
   type = screenType.landing;
+  register = true;
 
   constructor(props) {
     super(props);
@@ -50,7 +51,7 @@ class View extends GameObjectView {
         style="${this.style}"
       >
         <div style="width: 100%; padding: 0 1vw;display: grid; grid-template: repeat(2, max-content) / 1fr; gap: 1vw;">
-          <div style="width: 100%; display: grid; grid-template: 1fr / repeat(2, auto); gap: 1vw;">
+          <div style="width: 100%; display: grid; grid-template: 1fr / repeat(2, 1fr); gap: 1vw;">
             <div style="min-height: 40vh;">${
               this.selectedCharacterView?.html() || ""
             }</div>

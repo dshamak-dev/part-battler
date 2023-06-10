@@ -4,6 +4,7 @@ import Screen from "../model/screen.model.js";
 
 export default class BattleScreen extends Screen {
   type = screenType.battle;
+  register = true;
 
   constructor(props) {
     super(props);

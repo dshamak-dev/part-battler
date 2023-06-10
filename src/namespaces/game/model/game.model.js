@@ -97,17 +97,22 @@ export default class Game extends GameObject {
       this.screens = [];
     }
 
-    this.screens.push(screen);
+    const index = this.screens.findIndex((it) => it.type === screen.type);
+
+    if (index === -1) {
+      this.screens.push(screen);
+    } else {
+      this.screens.splice(index, 1, screen);
+    }
   }
 
   loadScreen(type, props) {
-    let screen = this.getScreen(type);
+    let screen = createScreenByType(
+      type,
+      Object.assign({}, props, { model: this })
+    );
 
-    if (!screen) {
-      screen = this.addScreen(
-        createScreenByType(type, Object.assign({}, props, { model: this }))
-      );
-    }
+    this.addScreen(screen);
 
     this.toggleScreen(type);
   }

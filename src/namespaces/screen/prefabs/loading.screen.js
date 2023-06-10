@@ -1,4 +1,5 @@
 import { getAllBundles } from "../../../shared/api/control/bundle.api.control.js";
+import { getRegistredScreen } from "../../../shared/api/control/screen.api.js";
 // import {
 //   addUser,
 //   getUser,
@@ -32,9 +33,18 @@ export default class LoadingScreen extends Screen {
       self.error = err?.message || err;
     });
 
-    if (!self.error) {
-      self.model.nextScreen();
+    if (self.error) {
+      return alert(self.error?.message || 'ALARM!!!');
     }
+
+    let nextScreenType = screenType.landing;
+    let nextScreenData = getRegistredScreen() || null;
+
+    if (nextScreenData) {
+      nextScreenType = nextScreenData.type; 
+    }
+
+    self.model.loadScreen(nextScreenType, nextScreenData);
   }
 
   async loadBundles() {
@@ -50,38 +60,6 @@ export default class LoadingScreen extends Screen {
 
     return (this.model.bundles = bundles || []);
   }
-
-  // async loadPlayer() {
-  //   const self = this;
-  //   this.error = null;
-  //   this.message = "Loading Player...";
-
-  //   const userId = this.model?.user?.id;
-
-  //   if (userId == null) {
-  //     return;
-  //   }
-
-  //   let user = await getUser(userId).catch((err) => {
-  //     self.error = err.message || err;
-
-  //     return null;
-  //   });
-
-  //   if (user == null) {
-  //     user = await addUser(userId, { characters: [{ id: 1, name: 'Tonocio' }], name: "Wooden Boy" })
-  //       .then((user) => {
-  //         return (self.model.user = user || null);
-  //       })
-  //       .catch((err) => {
-  //         self.error = err.message || err;
-
-  //         return null;
-  //       });
-  //   }
-
-  //   return (this.model.user = user || null);
-  // }
 }
 
 class View extends GameObjectView {

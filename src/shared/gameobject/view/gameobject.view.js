@@ -20,4 +20,8 @@ export default class GameObjectView {
   }
 
   render() {}
+
+  static toHTML(record) {
+    return '';
+  }
 }

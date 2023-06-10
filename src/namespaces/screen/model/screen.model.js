@@ -1,6 +1,7 @@
-import GameObject from "../../../shared/gameobject/model/gameobject.model.js";
+import { registerScreen } from "../../../shared/api/control/screen.api.js";
 
-export default class Screen extends GameObject {
+export default class Screen {
+  register = false;
   _visible;
   _message;
   _error;
@@ -41,19 +42,47 @@ export default class Screen extends GameObject {
     }
   }
 
-  get type() {
-    return this.constructor.name;
+  get html() {
+    return this.view?.html || null;
+  }
+
+  get json() {
+    const { type } = this;
+
+    return { type };
   }
 
   constructor(props) {
-    super(props);
+    Object.assign(
+      this,
+      {
+        type: this.constructor.name,
+      },
+      props || {}
+    );
   }
 
   show() {
     this.visible = true;
+
+    if (this.register) {
+      registerScreen(this);
+    }
   }
 
   hide() {
     this.visible = false;
+  }
+
+  update() {
+    if (this.view) {
+      this.view.render();
+    }
+  }
+
+  render() {
+    if (this.view && this.view.render) {
+      this.view.render();
+    }
   }
 }
