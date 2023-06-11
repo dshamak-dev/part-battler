@@ -10,3 +10,7 @@ export const onDOMEvent = (event, { callback, query }) => {
     callback(ev);
   });
 };
+
+export const removeDOMEvent = (eventName, handler) => {
+  document.removeEventListener(eventName, handler);
+};

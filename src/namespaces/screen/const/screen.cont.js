@@ -7,3 +7,10 @@ export const screenType = {
   settings: 5,
   battleSummary: 6,
 };
+
+export const screensWithNavigation = [
+  screenType.landing,
+  screenType.character,
+  screenType.battle,
+  screenType.battleSummary,
+];

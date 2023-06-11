@@ -68,10 +68,18 @@ export default class Screen {
     if (this.register) {
       registerScreen(this);
     }
+
+    if (this.view) {
+      this.view.onVisibilityChange(true);
+    }
   }
 
   hide() {
     this.visible = false;
+
+    if (this.view) {
+      this.view.onVisibilityChange(false);
+    }
   }
 
   update() {

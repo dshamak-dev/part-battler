@@ -1,6 +1,6 @@
 import { log } from "../../../shared/debug/control/debug.control.js";
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
-import { onDOMEvent } from "../../../shared/utils/dom.utils.js";
+import { onDOMEvent, removeDOMEvent } from "../../../shared/utils/dom.utils.js";
 import Character from "../../character/model/character.model.js";
 import {
   CharacterPreview,
@@ -26,6 +26,10 @@ export default class LandingScreen extends Screen {
     this.view.reset();
 
     log("info", "Game State", this.model);
+  }
+
+  hide() {
+    super.hide();
   }
 }
 
@@ -61,7 +65,9 @@ class View extends GameObjectView {
           </div>
           <div>
             <div id="start-session" style="margin: 0 auto; width: fit-content; padding: 0.5rem 2rem; background: #b2b2b2; color: black;  ${
-              hasSelectedCharacter ? "cursor: pointer;" : "pointer-events: none; opacity: 0.4;"
+              hasSelectedCharacter
+                ? "cursor: pointer;"
+                : "pointer-events: none; opacity: 0.4;"
             }">select</div>
           </div>
         </div>
@@ -76,48 +82,62 @@ class View extends GameObjectView {
 
     this.selectedCharacterView = null;
     this.characterListView = null;
+    this.handleStartSession = (e) => {
+      Game.instance.loadScreen(screenType.character, {
+        characterId: self.selectedCharacterId,
+      });
+    };
+    this.handleCharacterSelect = (e) => {
+      const game = Game.instance;
+      const target = e.target;
 
-    onDOMEvent('click', {
-      query: '#start-session',
-      callback: (e) => {
-        Game.instance.loadScreen(screenType.character, { characterId: self.selectedCharacterId });
+      const id = Number(target.getAttribute("data-id")) || null;
+      const isNew = target.getAttribute("data-empty") === "true";
+      const isLocked = target.getAttribute("data-locked") === "true";
+
+      if (isLocked) {
+        return false;
       }
-    });
 
-    onDOMEvent("click", {
-      callback: (e) => {
-        const game = Game.instance;
-        const target = e.target;
+      if (isNew) {
+        const character = new Character();
+        game.addCharacter(character.json);
+        self.onSelectCharacter(character);
 
-        const id = Number(target.getAttribute("data-id")) || null;
-        const isNew = target.getAttribute("data-empty") === "true";
-        const isLocked = target.getAttribute("data-locked") === "true";
+        return true;
+      }
 
-        if (isLocked) {
-          return false;
-        }
+      if (isLocked || (id != null && self.selectedCharacterId === id)) {
+        return;
+      }
 
-        if (isNew) {
-          const character = new Character();
-          game.addCharacter(character.json);
-          self.onSelectCharacter(character);
+      const character = game.characters.find((it) => it.id === id);
 
-          return true;
-        }
-
-        if (isLocked || (id != null && self.selectedCharacterId === id)) {
-          return;
-        }
-
-        const character = game.characters.find((it) => it.id === id);
-
-        if (character) {
-          self.onSelectCharacter(character);
-        }
-      },
-      query: ".character-preview",
-    });
+      if (character) {
+        self.onSelectCharacter(character);
+      }
+    };
   }
+
+  onVisibilityChange(visible) {
+    super.onVisibilityChange();
+
+    if (visible) {
+      onDOMEvent("click", {
+        query: "#start-session",
+        callback: this.handleStartSession,
+      });
+  
+      onDOMEvent("click", {
+        callback: this.handleCharacterSelect,
+        query: ".character-preview",
+      });
+    } else {
+      removeDOMEvent("click", this.handleStartSession);
+      removeDOMEvent("click", this.handleCharacterSelect);
+    }
+  }
+  
 
   reset() {
     const self = this;

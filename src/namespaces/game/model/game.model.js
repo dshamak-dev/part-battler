@@ -115,6 +115,7 @@ export default class Game extends GameObject {
     this.addScreen(screen);
 
     this.toggleScreen(type);
+    this.view.onVisibilityChange(true);
   }
 
   toggleScreen(nextScreenType) {
