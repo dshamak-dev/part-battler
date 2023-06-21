@@ -83,9 +83,7 @@ export default class Screen {
   }
 
   update() {
-    if (this.view) {
-      this.view.render();
-    }
+    this.render();
   }
 
   render() {

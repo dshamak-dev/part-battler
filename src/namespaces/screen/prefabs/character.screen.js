@@ -1,4 +1,5 @@
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
+import { onDOMEvent, removeDOMEvent } from "../../../shared/utils/dom.utils.js";
 import Character from "../../character/model/character.model.js";
 import {
   CharacterActiveItemsView,
@@ -19,10 +20,24 @@ export default class CharacterScreen extends Screen {
     return Object.assign({}, base, { characterId });
   }
 
+  get canStart() {
+    // todo: validation
+
+    return true;
+  }
+
   constructor(props) {
     super(props);
 
     this.view = new View({ model: this });
+  }
+
+  show() {
+    super.show();
+  }
+
+  hide() {
+    super.hide();
   }
 }
 
@@ -52,8 +67,8 @@ class View extends GameObjectView {
             <div style="font-size: 0.5rem;">${this.characterItemsView.html()}</div>
           </div>
           <div>
-            <div id="start-session" style="margin: 0 auto; width: fit-content; padding: 0.5rem 2rem; background: #b2b2b2; color: black;  ${
-              this.canStart
+            <div id="connect-session" style="margin: 0 auto; width: fit-content; padding: 0.5rem 2rem; background: #b2b2b2; color: black;  ${
+              this.model?.canStart
                 ? "cursor: pointer;"
                 : "pointer-events: none; opacity: 0.4;"
             }">start battle</div>
@@ -78,6 +93,26 @@ class View extends GameObjectView {
 
     this.characterItemsView = new CharacterActiveItemsView({
       model: this,
+    });
+
+    this.handleStartBattle = this.startBattle.bind(this);
+  }
+
+  onVisibilityChange(visible) {
+    if (visible) {
+      // connect to existing or open new
+      this.startBattleEventKey = onDOMEvent("click", {
+        callback: this.handleStartBattle,
+        query: "#connect-session",
+      });
+    } else {
+      removeDOMEvent(this.startBattleEventKey);
+    }
+  }
+
+  startBattle() {
+    Game.instance.loadScreen(screenType.battle, {
+      characterId: this.model.characterId,
     });
   }
 }

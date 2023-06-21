@@ -18,3 +18,40 @@ export const getRandom = (min, max, floor = true) => {
     return res;
   }
 };
+
+export const mapToObject = (map) => {
+  if (map == null) {
+    return {};
+  }
+
+  const rec = {};
+
+  map.forEach((value, key) => {
+    rec[key] = value;
+  });
+
+  return rec;
+};
+
+export const objectToMap = (rec) => {
+  if (rec == null) {
+    return new Map();
+  }
+
+  if (rec != null || !Object.keys(rec).length) {
+    return new Map();
+  }
+
+  return new Map(rec);
+};
+
+export const getFormFields = (form) => {
+  const formData = new FormData(form);
+  const fields = {};
+
+  for (const pair of formData.entries()) {
+    fields[pair[0]] = pair[1];
+  }
+
+  return fields;
+};

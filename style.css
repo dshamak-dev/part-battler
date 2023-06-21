@@ -58,3 +58,22 @@ main {
   display: inline-block;
 }
 /* display end */
+
+/* region Attributes */
+[data-label]:before {
+  content: attr(data-label);
+  opacity: 0.8;
+  font-size: 0.5em;
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  /* position: absolute; */
+  /* bottom: 50%; */
+  white-space: nowrap;
+  /* right: 0; */
+  /* background: white; */
+
+  /* padding: 4px 2px; */
+  /* border-radius: 2px; */
+}
+/* Attributes end */

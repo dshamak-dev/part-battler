@@ -123,18 +123,18 @@ class View extends GameObjectView {
     super.onVisibilityChange();
 
     if (visible) {
-      onDOMEvent("click", {
+      this.startSessionEventKey = onDOMEvent("click", {
         query: "#start-session",
         callback: this.handleStartSession,
       });
   
-      onDOMEvent("click", {
+      this.characterSelectEventKey = onDOMEvent("click", {
         callback: this.handleCharacterSelect,
         query: ".character-preview",
       });
     } else {
-      removeDOMEvent("click", this.handleStartSession);
-      removeDOMEvent("click", this.handleCharacterSelect);
+      removeDOMEvent(this.startSessionEventKey);
+      removeDOMEvent(this.characterSelectEventKey);
     }
   }
   

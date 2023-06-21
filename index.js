@@ -1,4 +1,5 @@
 import { createGame } from "./src/namespaces/game/control/game.control.js";
+import Server from "./src/namespaces/server/model/server.model.js";
 import {
   getPreviousArrayItem,
   getNextArrayItem,
@@ -10,6 +11,9 @@ import {
     env: "develop",
   };
 
+  const server = new Server();
+  server.start();
+
   const game = createGame();
 
   window.debug = {};
@@ -20,9 +24,13 @@ import {
   };
 
   window.addEventListener("keydown", (e) => {
-    let key = null;
+    let key = e.key;
 
-    switch (e.key.toLocaleLowerCase()) {
+    if (typeof key === 'string') {
+      key = key.toLowerCase();
+    }
+
+    switch (key) {
       case "1": {
         key = "addPart";
         break;
@@ -47,10 +55,6 @@ import {
         game.toggleScreen(nextScreenType);
         break;
       }
-    }
-
-    if (key != null) {
-      toggleState(key);
     }
   });
 })();

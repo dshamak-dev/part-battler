@@ -1,16 +1,32 @@
 import API from "../model/api.model.js";
 
+const cacheStorageKey = 'last-user';
 const userApi = new API({ category: 'users' });
 
 export const getCachedUser = async () => {
-  const users = await userApi.get();
-  const user = Object.values(users).shift();
+  const userId = localStorage.getItem(cacheStorageKey);
 
-  return user;
+  if (userId == null) {
+    return null;
+  }
+
+  return getUser(userId);
 };
 
 export const getUser = (userId) => {
   return userApi.get(userId);
+};
+
+export const signInUser = async (userId, json) => {
+  let user = await getUser(userId);
+
+  if (user == null) {
+    user = await userApi.post(userId, json);
+  }
+
+  localStorage.setItem(cacheStorageKey, user.id);
+
+  return user;
 };
 
 export const addUser = (userId, json) => {

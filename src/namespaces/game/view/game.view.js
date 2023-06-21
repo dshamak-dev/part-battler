@@ -43,10 +43,14 @@ export default class GameView extends GameObjectView {
   onVisibilityChange(visible) {
     super.onVisibilityChange(visible);
 
-    onDOMEvent("click", {
-      query: ".nav-link",
-      callback: this.handleLinkClick,
-    });
+    if (visible) {
+      this.navLinkEventKey = onDOMEvent("click", {
+        query: ".nav-link",
+        callback: this.handleLinkClick,
+      });
+    } else {
+      removeDOMEvent(this.navLinkEventKey);
+    }
   }
 
   render() {
