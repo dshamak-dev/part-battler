@@ -1,15 +1,10 @@
-import { log } from "../../debug/control/debug.control.js";
+import { getDatabase } from "../../../namespaces/db/control/db.control.js";
 import { waitFor } from "../../time/control/time.control.js";
 
 const fakeDelay = (min = 2, max = 5) => {
-  let startFake = Date.now();
   let ms = Math.max(min, Math.min(max, Math.floor(Math.random() * max))) * 1000;
 
-  return waitFor(ms).then(() => {
-    const passed = Date.now() - startFake;
-
-    // log('info',`Fake delay ${passed / 1000}s`);
-  });
+  return waitFor(ms);
 };
 
 export default class API {
@@ -17,35 +12,32 @@ export default class API {
 
   constructor({ category }) {
     this.category = category;
+    this.db = getDatabase(category);
   }
 
-  async get(props) {
+  async get(id) {
     await fakeDelay(1, 2);
 
     return new Promise((res, rej) => {
-      let data = JSON.parse(localStorage.getItem(this.category));
+      let data = this.db?.get(id);
 
       if (data == null) {
         return res(null);
       }
 
-      if (props == null) {
-        return res(data);
-      }
-
-      res(data[props]);
+      res(data);
     });
   }
 
-  async post(props, json) {
+  async post(id, json) {
     await fakeDelay();
 
     return new Promise((res, rej) => {
-      let data = JSON.parse(localStorage.getItem(this.category)) || {};
+      if (this.db == null) {
+        return rej('Connection failed');
+      }
 
-      data[props] = json;
-
-      localStorage.setItem(this.category, JSON.stringify(data));
+      this.db.set(id, json);
 
       res(json);
     });
@@ -55,29 +47,29 @@ export default class API {
     return this.put(props, json);
   }
 
-  async put(props, json) {
+  async put(id, json) {
     await fakeDelay();
     return new Promise((res, rej) => {
-      let data = JSON.parse(localStorage.getItem(this.category)) || {};
+      if (this.db == null) {
+        return rej('Connection failed');
+      }
 
-      data[props] = json;
-
-      localStorage.setItem(this.category, JSON.stringify(data));
+      this.db.update(id, json);
 
       res(json);
     });
   }
 
-  async delete(props) {
+  async delete(id) {
     await fakeDelay();
     return new Promise((res, rej) => {
-      let data = JSON.parse(localStorage.getItem(this.category)) || {};
+      if (this.db == null) {
+        return rej('Connection failed');
+      }
 
-      delete data[props];
+      this.db.delete(id);
 
-      localStorage.setItem(this.category, JSON.stringify(data));
-
-      res(json);
+      res(true);
     });
   }
 }

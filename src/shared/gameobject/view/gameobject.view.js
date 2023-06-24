@@ -1,7 +1,9 @@
 export default class GameObjectView {
   model;
+  el;
   // parent element
   parent;
+  children;
 
   get style() {
     return "";
@@ -12,7 +14,7 @@ export default class GameObjectView {
   }
 
   get html() {
-    return null;
+    return this.el ? this.el.outerHTML : "";
   }
 
   constructor(props = {}) {
@@ -21,9 +23,13 @@ export default class GameObjectView {
 
   render() {}
 
-  onVisibilityChange(visible = false) {}
+  onVisibilityChange(visible = false) {
+    if (Array.isArray(this.children)) {
+      this.children.forEach((it) => it.onVisibilityChange(visible));
+    }
+  }
 
   static toHTML(record) {
-    return '';
+    return "";
   }
 }

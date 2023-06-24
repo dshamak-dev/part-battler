@@ -1,8 +1,10 @@
+import { databaseType } from "../../../namespaces/db/const/db.const.js";
 import API from "../model/api.model.js";
 
 const cacheStorageKey = 'last-user';
-const userApi = new API({ category: 'users' });
+const userApi = new API({ category: databaseType.user });
 
+// replace with last game cache
 export const getCachedUser = async () => {
   const userId = localStorage.getItem(cacheStorageKey);
 
@@ -13,7 +15,7 @@ export const getCachedUser = async () => {
   return getUser(userId);
 };
 
-export const getUser = (userId) => {
+export const getUser = async (userId) => {
   return userApi.get(userId);
 };
 

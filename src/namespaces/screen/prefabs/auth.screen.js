@@ -1,11 +1,9 @@
 import {
-  addUser,
   getCachedUser,
-  getUser,
   signInUser,
 } from "../../../shared/api/control/user.api.control.js";
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
-import { getFormFields, mapToObject } from "../../../shared/utils/data.utils.js";
+import { getFormFields } from "../../../shared/utils/data.utils.js";
 import { onDOMEvent } from "../../../shared/utils/dom.utils.js";
 import Game from "../../game/model/game.model.js";
 import Screen from "../model/screen.model.js";
@@ -29,12 +27,13 @@ export default class AuthScreen extends Screen {
 
     const cachedUser = await getCachedUser().catch((err) => null);
 
-    if (cachedUser != null) {
-      this.user = cachedUser;
-    }
-
     this.loading = false;
     this.message = "Sign In";
+
+    if (cachedUser != null) {
+      this.user = cachedUser;
+      this.auth(cachedUser);
+    }
 
     this.update();
   }
@@ -42,7 +41,7 @@ export default class AuthScreen extends Screen {
   async auth({ email, name }) {
     this.loading = true;
     this.message = "Sign In. Please Wait";
-  
+
     this.update();
 
     const self = this;
@@ -95,10 +94,16 @@ class View extends GameObjectView {
           <h3>${this.model.message}</h3>
           <form id="auth-form">
             <div style="font-size: 1.4rem; display: flex; flex-direction: column; gap: 1vh;">
-              <div data-label="email"><input required id="email" name="email" ${disabled ? 'disabled="disabled"' : ''} /></div>
-              <div data-label="name"><input required id="name" name="name"  ${disabled ? 'disabled="disabled"' : ''} /></div>
+              <div data-label="email"><input required id="email" name="email" ${
+                disabled ? 'disabled="disabled"' : ""
+              } /></div>
+              <div data-label="name"><input required id="name" name="name"  ${
+                disabled ? 'disabled="disabled"' : ""
+              } /></div>
             </div>
-            <div><button ${disabled ? 'disabled="disabled"' : ''}>confirm</button></div>
+            <div><button ${
+              disabled ? 'disabled="disabled"' : ""
+            }>confirm</button></div>
           </form>
           ${
             this.model.error
@@ -115,7 +120,7 @@ class View extends GameObjectView {
 
     const self = this;
 
-    onDOMEvent('submit', {
+    onDOMEvent("submit", {
       callback: (e) => {
         e.preventDefault();
         const target = e.target;
@@ -123,7 +128,7 @@ class View extends GameObjectView {
 
         self.model.auth(authData);
       },
-      query: '#auth-form'
+      query: "#auth-form",
     });
   }
 
@@ -135,16 +140,16 @@ class View extends GameObjectView {
     }
     const { email = null, name = null } = this.model.user;
 
-    const emailEl = document.getElementById('email');
-    
+    const emailEl = document.getElementById("email");
+
     if (emailEl && email) {
-      emailEl.setAttribute('value', email);
+      emailEl.setAttribute("value", email);
     }
 
-    const nameEl = document.getElementById('name');
+    const nameEl = document.getElementById("name");
 
     if (nameEl && name) {
-      nameEl.setAttribute('value', name);
+      nameEl.setAttribute("value", name);
     }
   }
 }

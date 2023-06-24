@@ -22,6 +22,28 @@ export default class DB {
     this.save();
   }
 
+  update(key, data) {
+    const currentData = this.get(key);
+    const dataType = typeof data;
+    
+    switch (dataType) {
+      case 'object': {
+        if (currentData == null && data == null) {
+          this.set(key, data);
+          break;
+        }
+
+        this.set(key, Object.assign({}, currentData, data));
+        break;
+      }
+      default: {
+        this.set(key, data);
+      }
+    }
+
+    return true;
+  }
+
   get(key) {
     return this.table.get(key);
   }

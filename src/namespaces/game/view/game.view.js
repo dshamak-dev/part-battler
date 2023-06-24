@@ -1,5 +1,10 @@
+import ScreenLinkView from "../../../shared/components/screen.link.view.js";
 import GameObjectView from "../../../shared/gameobject/view/gameobject.view.js";
-import { onDOMEvent, removeDOMEvent } from "../../../shared/utils/dom.utils.js";
+import {
+  onDOMEvent,
+  recordToStyle,
+  removeDOMEvent,
+} from "../../../shared/utils/dom.utils.js";
 import {
   screenType,
   screensWithNavigation,
@@ -28,6 +33,9 @@ export default class GameView extends GameObjectView {
 
     this.parent = document.getElementById("root");
     this.navigationView = new GameNavigationView({ model: this.model });
+
+    this.children = [this.navigationView];
+
     this.handleLinkClick = (e) => {
       const target = e.target;
       const screenType = Number(target?.getAttribute("data-type"));
@@ -78,11 +86,19 @@ export default class GameView extends GameObjectView {
 
 class GameNavigationView extends GameObjectView {
   get style() {
-    return `width: 100%; overflow: hidden; height: 5vw; display: grid; grid-template-columns: repeat(3, 5vw); justify-content: space-between;`;
+    return `width: 100%; overflow: hidden; min-height: 5vw; display: grid; grid-template-columns: repeat(5, auto); justify-content: space-between;`;
   }
 
   get linkStyle() {
-    return "display: flex; align-items: center; cursor: pointer; justify-content: center;";
+    return recordToStyle({
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      cursor: "pointer",
+      justifyContent: "center",
+      padding: '1vh',
+      color: "white",
+    });
   }
 
   get className() {
@@ -91,12 +107,29 @@ class GameNavigationView extends GameObjectView {
 
   get html() {
     return `<div
-      style="${this.style}">
-      <div style="${this.linkStyle}" class="nav-link" data-type="${screenType.landing}">🎎</div>
+      style="${this.style}"
+    >
+      ${this.children.map((it) => it.html).join("")}
+      <div style="${this.linkStyle}cursor: default;opacity: 0.4;">🎯</div>
+      <div style="${this.linkStyle}cursor: default;opacity: 0.4;">🎰</div>
+      <div style="${this.linkStyle}cursor: default;opacity: 0.4;">🛠</div>
     </div>`;
   }
 
   constructor(props) {
     super(props);
+
+    this.landingLink = new ScreenLinkView({
+      type: screenType.landing,
+      content: "<span>💡</span><span style='font-size: 0.5rem;'>Home</span>",
+      style: this.linkStyle,
+    });
+    this.characterListLink = new ScreenLinkView({
+      type: screenType.characterList,
+      content: "<span>🧸</span><span style='font-size: 0.5rem;'>Characters</span>",
+      style: this.linkStyle,
+    });
+
+    this.children = [this.landingLink, this.characterListLink];
   }
 }

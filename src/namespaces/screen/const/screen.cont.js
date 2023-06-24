@@ -1,16 +1,18 @@
 export const screenType = {
   draft: 0,
-  auth: 1,
-  landing: 2,
-  character: 3,
-  battle: 4,
-  settings: 5,
-  battleSummary: 6,
+  auth: 'auth',
+  landing: 'landing',
+  characterList: 'character-list',
+  character: 'character',
+  session: 'session',
+  settings: 'settings',
+  sessionSummary: 'session-summary',
 };
 
 export const screensWithNavigation = [
   screenType.landing,
   screenType.character,
-  screenType.battle,
-  screenType.battleSummary,
+  screenType.characterList,
+  screenType.session,
+  screenType.sessionSummary,
 ];

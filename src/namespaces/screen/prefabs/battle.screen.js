@@ -10,7 +10,7 @@ import { screenType } from "../const/screen.cont.js";
 import Screen from "../model/screen.model.js";
 
 export default class BattleScreen extends Screen {
-  type = screenType.battle;
+  type = screenType.session;
   register = true;
   loading;
   _request;

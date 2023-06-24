@@ -1,10 +1,20 @@
-export const generateId = (length = 4) => {
+const chars =
+  "A aB bC cD dE eF fG gH hI iJ jK kL lM mN nO oP pQ qR rS sT tU uV vW wX xY yZ z"
+    .replace(/\s/g, "")
+    .split("");
+
+export const generateId = (length = 4, useChars = false) => {
+  const maxValue = useChars ? chars.length : 10;
+
   const rand = new Array(length)
     .fill(null)
-    .map(() => getRandom(0, 10, true))
-    .join("");
+    .map(() => getRandom(0, maxValue, true));
 
-  return Number(rand);
+  if (useChars) {
+    return rand.map((it) => chars[it]).join("");
+  }
+
+  return Number(rand.join(""));
 };
 
 // max is NOT included
@@ -38,11 +48,12 @@ export const objectToMap = (rec) => {
     return new Map();
   }
 
-  if (rec != null || !Object.keys(rec).length) {
+  if (rec == null || !Object.keys(rec).length) {
     return new Map();
   }
+  const entries = Object.entries(rec);
 
-  return new Map(rec);
+  return new Map(entries);
 };
 
 export const getFormFields = (form) => {
